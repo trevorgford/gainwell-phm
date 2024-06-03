@@ -199,8 +199,14 @@ const Member: React.FC = () => {
     handleAddGoalCloseModal();
   };
 
-  const handleEditGoal = () => {
+  const handleEditGoal = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    event.stopPropagation();
+    
+  };
 
+  const handleDeleteGoal = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    event.stopPropagation();
+    
   };
 
   const handleAddInterventionOpenModal = () => {
@@ -620,8 +626,8 @@ const Member: React.FC = () => {
                                                 <Box display="flex" justifyContent="space-between" width="100%" sx={{ lineHeight: 2.5 }}>
                                                     <Box>
                                                         <IconButton aria-label="delete">
-                                                            <EditIcon sx={{ color: "#ffffff", '&:hover': { color: '#00EEAE', } }} onClick={() => handleEditGoal()} />
-                                                            <DeleteIcon sx={{ color: "#ffffff", '&:hover': { color: '#00EEAE', } }} />
+                                                            <EditIcon sx={{ color: "#ffffff", '&:hover': { color: '#00EEAE', } }} onClick={handleEditGoal} />
+                                                            <DeleteIcon sx={{ color: "#ffffff", '&:hover': { color: '#00EEAE', } }} onClick={handleDeleteGoal} />
                                                         </IconButton>
                                                         {carePlanGoal.goal?.description}                                                         
                                                     </Box>
@@ -697,7 +703,27 @@ const Member: React.FC = () => {
                             {'Add Care Team Member'}
                         </ColorButton>
                     </Box>
-                    <DataGrid rows={careTeam} columns={careTeamColumns} getRowId={(row) => row.id} sx={{ mt: 3 }} />                
+                    <DataGrid 
+                        rows={careTeam} 
+                        columns={careTeamColumns} 
+                        getRowId={(row) => row.id} 
+                        sx={{ mt: 3, 
+                            '& .MuiDataGrid-columnHeaders': {
+                            color: '#ffffff', // Text color
+                            '&:hover': { color: '#00EEAE', }, // Hover text color
+                          },
+                          '& .MuiDataGrid-container--top [role=row]': {
+                            backgroundColor: '#2B3A44 !important',
+                            background: '#2B3A44 !important', // Background color
+                          },
+                          '& .MuiDataGrid-columnHeaders .MuiIconButton-root': {
+                            color: '#ffffff', // Text color
+                            '&:hover': { color: '#00EEAE', }, // Hover text color
+                          },
+                          '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 'bold', // Optional: Make header text bold
+                          }, }}
+                    />                
                 </>
             )}
         </Box>
