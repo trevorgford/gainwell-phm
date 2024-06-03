@@ -37,7 +37,7 @@ public class UserRepository(DapperDbContext context) : RepositoryBase<UserModel>
         return user;
     }
 
-    public override async Task<int> CreateAsync(UserModel entity, int userId) {
+    public override async Task<int> CreateAsync(UserModel entity, int userId, int tenantId) {
         var parameters = new DynamicParameters();
         parameters.Add("@username", entity.UserName);
         parameters.Add("@firstName", entity.FirstName);

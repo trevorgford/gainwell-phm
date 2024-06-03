@@ -9,7 +9,7 @@ public class UserValidationService(DapperDbContext context) {
     protected readonly DapperDbContext _context = context;
 
     public UserModel? ValidateLogin(LoginModel model) {
-        if (model.UserName == "tford" && model.Password == "password") {
+        if (model.UserName == "tford" && model.Password == "welcome01") {
             return new UserModel { Id = 1, UserName = "tford" };
         }
 

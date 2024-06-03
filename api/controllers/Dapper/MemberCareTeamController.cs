@@ -11,17 +11,17 @@ public class MemberCareTeamController(IRepository<MemberCareTeamModel> repositor
 
     private readonly IRepository<MemberCareTeamModel> _repository = repository;
 
-    [HttpPost("{personId}/add")]
+    [HttpPost("addPerson")]
     [SwaggerOperation(Summary = "Adds a person to a member's care team")]
-    public async Task<IActionResult> AddPersonToCareTeamAsync(int memberId, int personId) {
-        var result = await ((MemberCareTeamRepository)_repository).AddPersonToCareTeamAsync(memberId, personId);
+    public async Task<IActionResult> AddPersonToCareTeamAsync([FromBody] MemberCareTeamPersonModel careTeam) {
+        var result = await ((MemberCareTeamRepository)_repository).AddPersonToCareTeamAsync(careTeam.MemberId, careTeam.FirstName, careTeam.LastName, careTeam.Title, TenantId);
         return Ok(result);
     }
 
-    [HttpPost("{personId}/remove")]
+    [HttpPost("removePerson")]
     [SwaggerOperation(Summary = "Removes a person from a member's care team")]
-    public async Task<IActionResult> RemovePersonFromCareTeamAsync(int memberId, int personId) {
-        var result = await ((MemberCareTeamRepository)_repository).RemovePersonFromCareTeamAsync(memberId, personId);
+    public async Task<IActionResult> RemovePersonFromCareTeamAsync([FromBody] MemberCareTeamPersonModel careTeam) {
+        var result = await ((MemberCareTeamRepository)_repository).RemovePersonFromCareTeamAsync(careTeam.MemberId, careTeam.PersonId);
         return Ok(result);
     }
 

@@ -8,9 +8,11 @@ public interface IRepository<T> {
 
     Task<IEnumerable<T>> GetAllAsync();
 
+    Task<IEnumerable<T>> GetAllAsync(int tenantId);
+
     Task<T?> GetByIdAsync(int id);
 
-    Task<int> CreateAsync(T entity, int userId);
+    Task<int> CreateAsync(T entity, int userId, int tenantId);
 
     Task<int> DeactivateAsync(DynamicParameters parameters);
 

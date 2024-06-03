@@ -28,11 +28,11 @@ public class AuthenticationController(AuthenticationService authenticationServic
     }
 
     [HttpPost("selectTenant")]
-    public async Task<IActionResult> SelectTenant(string sessionId, int tenantId) {
-        var user = await _validationService.LoadTempSession(sessionId, tenantId);
+    public async Task<IActionResult> SelectTenant([FromBody] LoginTenantModel model) {
+        var user = await _validationService.LoadTempSession(model.SessionId, model.TenantId);
         if (user == null || user.Id == null) return Unauthorized();
 
-        var token = _authenticationService.GenerateJwtToken(user.Id.Value, tenantId);
+        var token = _authenticationService.GenerateJwtToken(user.Id.Value, model.TenantId);
         return Ok(new { Token = token });
     }
     

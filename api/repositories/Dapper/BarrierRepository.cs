@@ -8,9 +8,9 @@ namespace Gainwell.Repositories.Dapper;
 [ModelName("barrier")]
 public class BarrierRepository(DapperDbContext context) : RepositoryBase<BarrierModel>(context) {
 
-    public override async Task<int> CreateAsync(BarrierModel entity, int userId) {
+    public override async Task<int> CreateAsync(BarrierModel entity, int userId, int tenantId) {
         var parameters = new DynamicParameters();
-        parameters.Add("@tenantId", entity.TenantId);
+        parameters.Add("@tenantId", tenantId);
         parameters.Add("@code", entity.Code);
         parameters.Add("@description", entity.Description);
         return await CreateAsync(parameters);

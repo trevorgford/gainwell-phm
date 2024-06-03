@@ -16,13 +16,17 @@ public class UserJwtClaimsFilter : IActionFilter {
         }
 
         var userIdClaim = userClaims.Claims.FirstOrDefault(c => c.Type == "UserId");
-        if (userIdClaim == null) {
+        var tenantIdClaim = userClaims.Claims.FirstOrDefault(c => c.Type == "TenantId");
+        if (userIdClaim == null || tenantIdClaim == null) {
             context.Result = new UnauthorizedResult();
             return;
         }
 
         if (int.TryParse(userIdClaim.Value, out int userId)) {
             controller.UserId = userId;
+        }
+        if (int.TryParse(tenantIdClaim.Value, out int tenantId)) {
+            controller.TenantId = tenantId;
         }
         else context.Result = new UnauthorizedResult();
     }

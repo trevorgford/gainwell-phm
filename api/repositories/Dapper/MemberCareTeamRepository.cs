@@ -9,16 +9,21 @@ namespace Gainwell.Repositories.Dapper;
 [ModelName("memberCareTeam")]
 public class MemberCareTeamRepository(DapperDbContext context) : RepositoryBase<MemberCareTeamModel>(context) { 
 
-    public async Task<int> AddPersonToCareTeamAsync(int memberId, int personId) {
+    public async Task<int> AddPersonToCareTeamAsync(int? memberId, string? firstName, string? lastName, string? title, int tenantId) {
         var parameters = new DynamicParameters();
         parameters.Add("@memberId", memberId);
-        parameters.Add("@personId", personId);
+        parameters.Add("@tenantId", tenantId);
+        parameters.Add("@firstName", firstName);
+        parameters.Add("@lastName", lastName);
+        parameters.Add("@title", title);
+        parameters.Add("@personId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         using var db = _context.CreateConnection();
-        return await db.ExecuteStoredProcedureAsync("memberCareTeam_person_add", parameters);
+        var results = await db.ExecuteStoredProcedureAsync("memberCareTeam_person_add", parameters);
+        return parameters.Get<int>("@personId");
     }
 
-    public async Task<int> RemovePersonFromCareTeamAsync(int memberId, int personId) {
+    public async Task<int> RemovePersonFromCareTeamAsync(int? memberId, int? personId) {
         var parameters = new DynamicParameters();
         parameters.Add("@memberId", memberId);
         parameters.Add("@personId", personId);
@@ -32,25 +37,34 @@ public class MemberCareTeamRepository(DapperDbContext context) : RepositoryBase<
         parameters.Add("@memberId", memberId);
 
         using var db = _context.CreateConnection();
+        var results = await db.QueryAsync<dynamic>("memberCareTeam_load", parameters, commandType: CommandType.StoredProcedure);
 
-        var careTeam = new MemberCareTeamModel() { Member = new MemberModel(), People = []};
+        MemberCareTeamModel? careTeam = null;
 
-        await db.QueryAsync<MemberModel, PersonModel, MemberCareTeamModel>(
-            "memberCareTeam_load",
-            (member, person) => {
-                careTeam.Member = member;
-                careTeam.People.Add(person);
-                return careTeam;
-            },
-            splitOn: "personId",
-            param: parameters,
-            commandType: CommandType.StoredProcedure
-        );
+        foreach (var row in results) {
+            careTeam ??= new MemberCareTeamModel {
+                    Member = new MemberModel {
+                        Id = row.Id,
+                        FirstName = row.firstName,
+                        LastName = row.lastName
+                    },
+                    People = []
+                };
 
-        return careTeam;
+            if (row.personId != null) {
+                careTeam.People.Add(new PersonModel {
+                    Id = row.personId,
+                    FirstName = row.personFirstName,
+                    LastName = row.personLastName,
+                    Title = row.title
+                });
+            }
+        }
+
+        return careTeam;        
     }
 
-    public override Task<int> CreateAsync(MemberCareTeamModel entity, int userId) {
+    public override Task<int> CreateAsync(MemberCareTeamModel entity, int userId, int tenantId) {
         throw new NotImplementedException();
     }
 

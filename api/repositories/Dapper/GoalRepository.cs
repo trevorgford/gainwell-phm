@@ -8,9 +8,9 @@ namespace Gainwell.Repositories.Dapper;
 [ModelName("goal")]
 public class GoalRepository(DapperDbContext context) : RepositoryBase<GoalModel>(context) {
 
-    public override async Task<int> CreateAsync(GoalModel entity, int userId) {
+    public override async Task<int> CreateAsync(GoalModel entity, int userId, int tenantId) {
         var parameters = new DynamicParameters();
-        parameters.Add("@tenantId", entity.TenantId);
+        parameters.Add("@tenantId", tenantId);
         parameters.Add("@code", entity.Code);
         parameters.Add("@description", entity.Description);
         return await CreateAsync(parameters);

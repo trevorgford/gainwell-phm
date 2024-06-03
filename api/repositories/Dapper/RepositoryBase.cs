@@ -44,6 +44,12 @@ public class RepositoryBase<T>: IRepository, IRepository<T> where T : ModelBase{
         return await db.QueryStoredProcedureAsync<T>(GetAllStoredProcedure);
     }
 
+    public virtual async Task<IEnumerable<T>> GetAllAsync(int tenantId) {
+        if (string.IsNullOrEmpty(GetAllStoredProcedure)) throw new InvalidOperationException("GetAllStoredProcedure is not set");
+        using var db = _context.CreateConnection();
+        return await db.QueryStoredProcedureAsync<T>(GetAllStoredProcedure, new DynamicParameters(new { tenantId = tenantId }));
+    }
+
     public virtual async Task<T?> GetByIdAsync(int id) {
         if(string.IsNullOrEmpty(GetByIdStoredProcedure)) throw new InvalidOperationException("GetByIdStoredProcedure is not set");
         using var db = _context.CreateConnection();
@@ -78,6 +84,10 @@ public class RepositoryBase<T>: IRepository, IRepository<T> where T : ModelBase{
     }
 
     public virtual Task<int> CreateAsync(T entity, int userId) {
+        throw new NotImplementedException();
+    }
+
+    public virtual Task<int> CreateAsync(T entity, int userId, int tenantId) {
         throw new NotImplementedException();
     }
 

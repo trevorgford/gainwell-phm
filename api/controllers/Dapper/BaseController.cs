@@ -3,20 +3,38 @@ using Gainwell.Repositories.Dapper;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Gainwell.Filters;
+using Gainwell.Attributes;
 
 namespace Gainwell.Controllers.Dapper;
 
 [Authorize]
 [ServiceFilter(typeof(UserJwtClaimsFilter))]
-public class BaseController<T>(IRepository<T> repository) : ControllerBase, IController {
+public class BaseController<T> : ControllerBase, IController {
 
-    private readonly IRepository<T> _repository = repository;
+    public BaseController(IRepository<T> repository) {
+        _repository = repository;
+
+        Type type = GetType();
+        Attribute? attribute = Attribute.GetCustomAttribute(type, typeof(RequiresTenantAttribute));
+        if(attribute == null) return;
+        RequiresTenantAttribute requiresTenantAttribute = (RequiresTenantAttribute)attribute;
+        RequiresTenant = requiresTenantAttribute.RequiresTenant;
+    }
+
+    private readonly IRepository<T> _repository;
     public int UserId { get; set; }
+    public int TenantId { get; set; } = 5;
+    public bool RequiresTenant { get; set; }
 
     [HttpGet]
     public virtual async Task<ActionResult<IEnumerable<T>>> GetAll() {
-        var entities = await _repository.GetAllAsync();
-        return Ok(entities);
+        if (RequiresTenant) {
+            var entities = await _repository.GetAllAsync(TenantId);
+            return Ok(entities);
+        }
+
+        var entities2 = await _repository.GetAllAsync();
+        return Ok(entities2);
     }
 
     [HttpGet("{id}")]
@@ -28,7 +46,7 @@ public class BaseController<T>(IRepository<T> repository) : ControllerBase, ICon
 
     [HttpPost]
     public virtual async Task<ActionResult<int>> Create(T entity) {
-        var result = await _repository.CreateAsync(entity, UserId);
+        var result = await _repository.CreateAsync(entity, UserId, TenantId);
         return Ok(result);
     }
 

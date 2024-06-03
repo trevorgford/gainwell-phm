@@ -8,7 +8,7 @@ namespace Gainwell.Repositories.Dapper;
 [ModelName("tenant")]
 public class TenantRepository(DapperDbContext context) : RepositoryBase<TenantModel>(context) {
 
-    public override async Task<int> CreateAsync(TenantModel entity, int userId) {
+    public override async Task<int> CreateAsync(TenantModel entity, int userId, int tenantId) {
         var parameters = new DynamicParameters();
         parameters.Add("@code", entity.Code);
         parameters.Add("@description", entity.Description);
