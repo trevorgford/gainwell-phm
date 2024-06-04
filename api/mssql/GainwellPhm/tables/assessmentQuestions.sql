@@ -9,7 +9,7 @@ create table assessmentQuestions (
     active bit not null constraint df_assessmentQuestions_active default 1,
     constraint pk_assessmentQuestions primary key ( questionId ),
     constraint fk_assessmentQuestions_assessmentSections foreign key ( sectionId ) references assessmentSections ( sectionId ),
-    constraint fk_assessmentQuestions_assessmentQuestionTypes foreign key ( questionTypeId ) references assessmentQuestionTypes ( questionTypeId ),
-    constraint fk_assessmentQuestions_assessmentChoices foreign key ( parentChoiceId ) references assessmentChoices ( choiceId )
+    constraint fk_assessmentQuestions_assessmentQuestionTypes foreign key ( questionTypeId ) references assessmentQuestionTypes ( questionTypeId )--,
+    --constraint fk_assessmentQuestions_assessmentChoices foreign key ( parentChoiceId ) references assessmentChoices ( choiceId )
 );
 go

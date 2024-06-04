@@ -19,4 +19,9 @@ public class AssessmentSectionRepository(DapperDbContext context) : RepositoryBa
         return await CreateAsync(parameters);
     }
 
+    public async Task<IEnumerable<AssessmentSectionModel>> GetAssessmentSections(int assessmentId) {
+        using var db = _context.CreateConnection();
+        return await db.QueryStoredProcedureAsync<AssessmentSectionModel>("assessmentSections_load", new DynamicParameters(new { assessmentId }));
+    }
+
 }
