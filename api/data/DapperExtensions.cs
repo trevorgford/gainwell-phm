@@ -22,6 +22,20 @@ public static class DapperExtensions {
     //     // };
     // }
 
+    public static async Task<DataRow> ExecuteDataRowAsync(this IDbConnection db, string storedProcedure, object? parameters = null) {
+        using var reader = await db.ExecuteReaderAsync(storedProcedure, parameters);
+        var dataTable = new DataTable();
+        dataTable.Load(reader);
+        return dataTable.Rows[0];
+    }
+
+    public static async Task<DataTable> ExecuteDataTableAsync(this IDbConnection db, string storedProcedure, object? parameters = null) {
+        using var reader = await db.ExecuteReaderAsync(storedProcedure, parameters);
+        var dataTable = new DataTable();
+        dataTable.Load(reader);
+        return dataTable;
+    }
+
     public static async Task<List<DataTable>> ExecuteDataTablesAsync(this IDbConnection db, string storedProcedure, object? parameters = null) {
         using var reader = await db.ExecuteReaderAsync(storedProcedure, parameters);
 

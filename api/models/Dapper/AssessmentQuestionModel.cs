@@ -8,5 +8,6 @@ public class AssessmentQuestionModel : ModelBase {
     public string? Description { get; set; }
     public int? SortOrder { get; set; }
     public bool? Active { get; set; }
+    public List<AssessmentChoiceModel> Choices { get; set; } = [];
 
 }

@@ -10,6 +10,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AppProps } from 'next/app';
 import { Poppins } from 'next/font/google';
 import theme from '../themes/theme';
+import { AppBar, Box, Container, Stack, Typography } from '@mui/material';
+import { blue } from '@mui/material/colors';
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -25,9 +27,9 @@ const poppins = Poppins({
 const AuthenticationChecker: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { isAuthenticated } = requireAuthentication();
 
-  if (!isAuthenticated && typeof window !== 'undefined' && window.location.pathname !== '/login') {
-      return <div>Loading...</div>;
-  }
+  // if (!isAuthenticated && typeof window !== 'undefined' && window.location.pathname !== '/login') {
+  //     return <div>Loading...</div>;
+  // }
 
   return <>{children}</>;
 };
@@ -41,13 +43,15 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         <body>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <Layout>
-                <AuthProvider>
-                  <AuthenticationChecker>
-                    {children}
-                  </AuthenticationChecker>
-                </AuthProvider>
-              </Layout>
+                <Layout>
+                  <AuthProvider>
+                    <AuthenticationChecker>
+                      <Container>
+                        {children}
+                      </Container>
+                    </AuthenticationChecker>
+                  </AuthProvider>
+                </Layout>
             </ThemeProvider>           
         </body>
     </html>

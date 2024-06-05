@@ -13,15 +13,17 @@ import { Goal } from '@/types/Goal';
 import { Intervention } from '@/types/Intervention';
 import { Barrier } from '@/types/Barrier';
 //import withAuth from '@/components/withAuth';
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Avatar, Box, Button, ButtonProps, Checkbox, Container, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Tab, Tabs, TextField, Typography, styled } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Avatar, Box, Button, ButtonProps, Checkbox, Container, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, IconButton, InputLabel, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Tab, Tabs, TextField, Typography, styled } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetter } from '@mui/x-data-grid';
 import ModalPopup from '@/components/modalPopup';
+import { MemberAssessment } from '@/types/MemberAssessment';
+import { Assessment } from '@/types/Assessment';
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: "#ffffff",
@@ -69,6 +71,9 @@ const Member: React.FC = () => {
   const [selectedInterventions, setSelectedInterventions] = useState<Intervention[]>([]);
 
   const [addAssessmentModalOpen, setAddAssessmentModalOpen] = useState(false);
+
+  const [memberAssessments, setMemberAssessments] = useState<MemberAssessment[]>([]);
+  const [memberAssessmentsLoaded, setMemberAssessmentsLoaded] = useState<boolean>(false);
 
   const problemsAutocompleteProps = {
     options: problems,
@@ -294,7 +299,28 @@ const Member: React.FC = () => {
         }
     };
 
+    const fetchMemberAssessments = async () => {
+      if(memberId && !memberAssessmentsLoaded) {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token') || '';
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            const response = await axiosInstance.get<MemberAssessment[]>(`/api/members/${memberId}/assessments`);
+            setMemberAssessments(response.data);
+            setMemberAssessmentsLoaded(true);
+        }
+        catch (error) {
+            console.error('Error fetching member assessments:', error);
+        }
+        finally {
+            setLoading(false);
+        }
+      }
+    };
+
     fetchMember();
+    fetchMemberAssessments();
   }, [memberId]);
 
   if (loading) {
@@ -358,6 +384,32 @@ const Member: React.FC = () => {
     //     );
     //   }, },
     { field: 'description', headerName: 'Barrier', flex:1 }
+  ];  
+
+  const memberAssessmentsColumns: GridColDef[] = [
+    {
+      field: 'assessment',
+      headerName: 'Assessment Name',
+      width: 200,
+      valueGetter: (value: Assessment) => {(
+        <Link href={`/assessments/${params.id}`}>
+          {value.description}
+        </Link>
+      )},
+      renderCell: (params) => {
+        const handleClick = (e: { preventDefault: () => void; }) => {
+          e.preventDefault();
+          window.location.href = `/members/${memberId}/assessments/${params.row.id}`;
+        };
+    
+        return (
+          <Link href={`/members/${memberId}/assessments/${params.row.id}`} onClick={handleClick}>
+            {params.row.assessment.description}
+          </Link>
+        );
+      },
+    },   
+    { field: 'modifiedTimestamp', headerName: 'Last Modified', width: 200 }
   ];  
 
   const loadCareTeam = async () => {
@@ -576,7 +628,28 @@ const Member: React.FC = () => {
                         <ColorButton variant="contained" color="primary" onClick={handleAddAssessmentOpenModal} disabled={loading} sx={{ mt: 1 }}>
                             {'Add Assessment'}
                         </ColorButton>
-                    </Box>               
+                    </Box>
+                    <DataGrid 
+                        rows={memberAssessments} 
+                        columns={memberAssessmentsColumns} 
+                        getRowId={(row) => row.id} 
+                        sx={{ mt: 3, 
+                            '& .MuiDataGrid-columnHeaders': {
+                            color: '#ffffff', // Text color
+                            '&:hover': { color: '#00EEAE', }, // Hover text color
+                          },
+                          '& .MuiDataGrid-container--top [role=row]': {
+                            backgroundColor: '#2B3A44 !important',
+                            background: '#2B3A44 !important', // Background color
+                          },
+                          '& .MuiDataGrid-columnHeaders .MuiIconButton-root': {
+                            color: '#ffffff', // Text color
+                            '&:hover': { color: '#00EEAE', }, // Hover text color
+                          },
+                          '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 'bold', // Optional: Make header text bold
+                          }, }}
+                    />         
                 </>
             )}
             {tabValue == 1 && (

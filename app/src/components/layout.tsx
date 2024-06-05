@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Poppins } from 'next/font/google';
 import LogoutButton from "./logoutButton";
+import { LinearProgress, Stack, linearProgressClasses, styled } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -23,6 +24,27 @@ const poppins = Poppins({
 type LayoutProps = {
   children: ReactNode;
 };
+
+// const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+//   height: 5,
+//   [`&.${linearProgressClasses.colorPrimary}`]: {
+//     backgroundColor: '#2B3A44',
+//   },
+//   [`& .${linearProgressClasses.bar}`]: {
+//     backgroundColor: '#00EEAE',
+//   },
+// }));
+
+// const ProgressBar: React.FC = () => {
+//   if (isLoading) {
+//       return <>
+//         <Stack sx={{ width: '100%' }}>
+//           <BorderLinearProgress />
+//           <span>Hey</span>
+//         </Stack> 
+//       </>;
+//   }
+// };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
@@ -41,7 +63,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </AppBar>
       <Container component="main" sx={{ flex: 1, py: 4 }}>
         {children}
-      </Container>
+      </Container> 
       <Box component="footer" sx={{ py: 2, textAlign: 'center', mt: 'auto' }}>
         <Typography variant="body2">Copyright © 2024 Gainwell Technologies LLC. All rights reserved.</Typography>
       </Box>

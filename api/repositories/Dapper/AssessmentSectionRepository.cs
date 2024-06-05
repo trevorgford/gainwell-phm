@@ -13,9 +13,7 @@ public class AssessmentSectionRepository(DapperDbContext context) : RepositoryBa
         parameters.Add("@assessmentId", entity.Assessment?.Id);
         parameters.Add("@description", entity.Description);
         parameters.Add("@sortOrder", entity.SortOrder);
-        parameters.Add("@active", entity.Active);
         parameters.Add("@userId", userId);
-        parameters.Add("@tenantId", tenantId);
         return await CreateAsync(parameters);
     }
 

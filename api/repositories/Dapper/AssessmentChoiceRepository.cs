@@ -14,9 +14,7 @@ public class AssessmentChoiceRepository(DapperDbContext context) : RepositoryBas
         parameters.Add("@description", entity.Description);
         parameters.Add("@sortOrder", entity.SortOrder);
         parameters.Add("@score", entity.Score);
-        parameters.Add("@active", entity.Active);
         parameters.Add("@userId", userId);
-        parameters.Add("@tenantId", tenantId);
         return await CreateAsync(parameters);
     }
 

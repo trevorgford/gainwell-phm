@@ -11,9 +11,7 @@ public class AssessmentQuestionTypeRepository(DapperDbContext context) : Reposit
     public override async Task<int> CreateAsync(AssessmentQuestionTypeModel entity, int userId, int tenantId) {
         var parameters = new DynamicParameters();
         parameters.Add("@description", entity.Description);
-        parameters.Add("@active", entity.Active);
         parameters.Add("@userId", userId);
-        parameters.Add("@tenantId", tenantId);
         return await CreateAsync(parameters);
     }
 

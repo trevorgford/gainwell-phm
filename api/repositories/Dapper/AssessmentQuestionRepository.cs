@@ -16,18 +16,17 @@ public class AssessmentQuestionRepository(DapperDbContext context) : RepositoryB
         parameters.Add("@description", entity.Description);
         parameters.Add("@sortOrder", entity.SortOrder);
         parameters.Add("@userId", userId);
-        parameters.Add("@tenantId", tenantId);
         return await CreateAsync(parameters);
     }
 
     public async Task<IEnumerable<AssessmentQuestionModel>> GetAssessmentQuestions(int assessmentId) {
         using var db = _context.CreateConnection();
-        return await db.QueryStoredProcedureAsync<AssessmentQuestionModel>("questions_load", new DynamicParameters(new { assessmentId }));
+        return await db.QueryStoredProcedureAsync<AssessmentQuestionModel>("assessmentQuestions_load", new DynamicParameters(new { assessmentId }));
     }
 
     public async Task<IEnumerable<AssessmentQuestionModel>> GetAssessmentQuestionsBySection(int sectionId) {
         using var db = _context.CreateConnection();
-        return await db.QueryStoredProcedureAsync<AssessmentQuestionModel>("questions_bySection_load", new DynamicParameters(new { sectionId }));
+        return await db.QueryStoredProcedureAsync<AssessmentQuestionModel>("assessmentQuestions_bySection_load", new DynamicParameters(new { sectionId }));
     }
 
 }

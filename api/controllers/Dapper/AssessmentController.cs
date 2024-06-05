@@ -11,7 +11,20 @@ namespace Gainwell.Controllers.Dapper;
 [RequiresTenant(true)]
 public class AssessmentController(IRepository<AssessmentModel> repository) : BaseController<AssessmentModel>(repository) {
 
-    //private readonly IRepository<AssessmentModel> _repository = repository;
+    private readonly IRepository<AssessmentModel> _repository = repository;
+
+    [HttpGet("{id}")]
+    [SwaggerOperation(Summary = "Loads full Assessment")]
+    public async Task<ActionResult<AssessmentModel>> LoadFullAssessment(int id) {
+        var result = await ((AssessmentRepository)_repository).LoadFullAssessment(id);
+        return Ok(result);
+    }
+
+    [HttpGet("getById")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public override Task<ActionResult<AssessmentModel>> GetById(int id) {
+        throw new NotImplementedException();
+    }
 
     // [HttpGet("current")]
     // [SwaggerOperation(Summary = "Gets all current Assessment records")]
