@@ -10,8 +10,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AppProps } from 'next/app';
 import { Poppins } from 'next/font/google';
 import theme from '../themes/theme';
-import { AppBar, Box, Container, Stack, Typography } from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { Container } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Breadcrumb from '@/components/breadcrumb';
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -47,7 +49,11 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
                   <AuthProvider>
                     <AuthenticationChecker>
                       <Container>
+                        {/* <Container sx={{ mb: 2 }}>
+                          <Breadcrumb />
+                        </Container> */}
                         {children}
+                        <ToastContainer />
                       </Container>
                     </AuthenticationChecker>
                   </AuthProvider>

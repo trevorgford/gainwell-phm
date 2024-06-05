@@ -23,14 +23,26 @@ const CheckboxList: React.FC<CheckboxListProps> = ({ parentId, options, initialS
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value);
-    setSelectedOptions(prevSelectedOptions => {
-      const newSelectedOptions = prevSelectedOptions.includes(value)
-        ? prevSelectedOptions.filter(option => option !== value)
-        : [...prevSelectedOptions, value];
+    
+    const exists: boolean = selectedOptions.includes(value);
+    const newSelectedOptions = exists ? selectedOptions.filter(option => option !== value) : [...selectedOptions, value];
+    setSelectedOptions(newSelectedOptions);
+    onSelectionChange(newSelectedOptions, parentId);
 
-      onSelectionChange(newSelectedOptions, parentId);
-      return newSelectedOptions;
-    });
+    // setSelectedOptions(prevSelectedOptions => {
+    //   const exists: boolean = prevSelectedOptions.includes(value);
+    //   //debugger;
+    //   const newSelectedOptions = exists
+    //     ? prevSelectedOptions.filter(option => option !== value)
+    //     : [...prevSelectedOptions, value];
+    //   debugger;
+    //   // const newSelectedOptions = prevSelectedOptions.includes(value)
+    //   //   ? prevSelectedOptions.filter(option => option !== value)
+    //   //   : [...prevSelectedOptions, value];
+
+    //   onSelectionChange(newSelectedOptions, parentId);
+    //   return newSelectedOptions;
+    // });
   };
 
   return (

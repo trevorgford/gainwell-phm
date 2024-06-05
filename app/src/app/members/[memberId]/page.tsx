@@ -13,7 +13,7 @@ import { Goal } from '@/types/Goal';
 import { Intervention } from '@/types/Intervention';
 import { Barrier } from '@/types/Barrier';
 //import withAuth from '@/components/withAuth';
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Avatar, Box, Button, ButtonProps, Checkbox, Container, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, IconButton, InputLabel, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Tab, Tabs, TextField, Typography, styled } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Avatar, Box, Breadcrumbs, Button, ButtonProps, Checkbox, Container, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, IconButton, InputLabel, Link, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Tab, Tabs, TextField, Typography, styled } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
@@ -24,6 +24,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetter } from '@mu
 import ModalPopup from '@/components/modalPopup';
 import { MemberAssessment } from '@/types/MemberAssessment';
 import { Assessment } from '@/types/Assessment';
+import { toast } from 'react-toastify';
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: "#ffffff",
@@ -93,6 +94,13 @@ const Member: React.FC = () => {
     getOptionId: (option: Intervention) => option.id,
   };
 
+  const notify = (type: string, message: string) => {
+    if(type == 'success') toast.success(message);
+    else if(type == 'error') toast.error(message);
+    else if(type == 'info') toast.info(message);
+    else if(type == 'warn') toast.warning(message);
+  };  
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     
@@ -120,6 +128,7 @@ const Member: React.FC = () => {
     //console.log('Save clicked');
     saveCareTeamMember();
     handleAddCareTeamCloseModal();
+    notify('success', 'Care team member added');
   };
 
   const handleAddCareTeamCancel = () => {
@@ -600,12 +609,20 @@ const Member: React.FC = () => {
   return (
     <Box>
         <Box>
+          <Breadcrumbs>
+            <Link href="/">
+              <Typography color="textPrimary">Home</Typography>
+            </Link>
+            <Typography color="textPrimary">Member Record</Typography>
+          </Breadcrumbs>
+        </Box>
+        {/* <Box>
             <Typography variant="h5" component="h1">Member Record</Typography>
             <p>Member ID: {member.id}</p>
             <p>First Name: {member.firstName}</p>
             <p>Last Name: {member.lastName}</p>  
-        </Box>
-        <Box>
+        </Box> */}
+        <Box sx={{ mt: 2 }}>
             <Tabs value={tabValue} textColor="secondary" indicatorColor="secondary" onChange={handleTabChange} aria-label="member record tabs" 
             sx={{
             backgroundColor: '#2B3A44', // Background color of the Tabs

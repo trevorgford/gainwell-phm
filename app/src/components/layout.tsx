@@ -1,4 +1,7 @@
+
+
 import type { Metadata } from "next";
+import { useRouter, usePathname } from "next/navigation";
 import { Inter } from "next/font/google";
 import "../app/globals.css";
 import React, { ReactNode } from 'react';
@@ -14,6 +17,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Poppins } from 'next/font/google';
 import LogoutButton from "./logoutButton";
 import { LinearProgress, Stack, linearProgressClasses, styled } from "@mui/material";
+import MainAppBar from "./mainAppBar";
+
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -47,9 +52,32 @@ type LayoutProps = {
 // };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const getMemberDetails = () => {
+    if(pathname === '/members/1') {
+      return { name: 'Mickey Mouse', id: 1 }
+    }
+    else if(pathname === '/members/1/assessments/1') {
+      return { name: 'Mickey Mouse', id: 1 }
+    }
+
+    return undefined;
+  };
+
+  const getTitle = () => {
+    if(pathname === '/members/1') {
+      return 'Member Record';
+    }
+
+    return undefined;
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static" sx={{ backgroundColor: '#2B3A44' }}>
+      <MainAppBar memberDetails={getMemberDetails()} />
+      {/* <AppBar>
         <Toolbar>
             <Image src="/GainwellLogo-Light.png" alt="Gainwell Logo" width={151} height={36} />
             <Typography variant="h4" component="div" sx={{ ml: 2, color: 'white' }} className={poppins.className}>
@@ -60,8 +88,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <LogoutButton />
             </Box>
         </Toolbar>
-      </AppBar>
-      <Container component="main" sx={{ flex: 1, py: 4 }}>
+      </AppBar> */}
+      <Container component="main" sx={{ flex: 1, pt: 2, pb: 4 }}>
         {children}
       </Container> 
       <Box component="footer" sx={{ py: 2, textAlign: 'center', mt: 'auto' }}>

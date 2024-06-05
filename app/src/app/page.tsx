@@ -8,7 +8,7 @@ import MemberSearch from "@/components/memberSearch";
 
 const Home: React.FC = () => {
   return (
-    <Box>
+    <Box sx={{ mt: 2 }}>
       <Typography variant="h3" align="center" gutterBottom>
         Welcome to Gainwell PHM
       </Typography>
